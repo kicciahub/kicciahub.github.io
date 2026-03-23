@@ -1,10 +1,10 @@
-// Helper: Turns 1 into (math)
+// Helper: Turns 1 into (math) for confusing lookups
 function scramble(n) {
     const seed = Math.floor(Math.random() * 5000) + 1000;
     return `(${seed + n}-${seed})`;
 }
 
-// Helper: Turns "Hi" into \072\105
+// Helper: Converts strings to Hex-style byte escapes
 function toByteString(str) {
     return str.split('').map(c => `\\${c.charCodeAt(0).toString().padStart(3, '0')}`).join('');
 }
@@ -23,25 +23,32 @@ function runObfuscation() {
     if (!input) return;
 
     try {
-        // Validate Luau Syntax
+        // 1. Validate Luau Syntax using luaparse
         luaparse.parse(input);
 
+        // 2. Generate Random KiciaHUB Header (20-34 times)
+        const repeatCount = Math.floor(Math.random() * (34 - 20 + 1)) + 20;
+        const header = "--[KiciaHUB] ".repeat(repeatCount);
+
         let pool = [];
-        // Extract strings and replace with table lookups
+        // 3. Extract strings and replace with table lookups (_S[index])
         let mangled = input.replace(/"(.*?)"|'(.*?)'/g, (m, p1, p2) => {
             let content = p1 || p2 || "";
             pool.push(toByteString(content));
             return `_S[${scramble(pool.length)}]`;
         });
 
+        // 4. Minification: Strip comments and collapse into one line
+        mangled = mangled
+            .replace(/--\[\[[\s\S]*?\]\]/g, "") // Remove multi-line comments
+            .replace(/--.*$/gm, "")             // Remove single-line comments
+            .replace(/\s+/g, " ")               // Turn all newlines/tabs into single spaces
+            .trim();
+
         const tableData = pool.map(s => `"${s}"`).join(";");
-        const version = "1.0.5";
         
-        // The Final Boilerplate Template
-        const final = `--[[ SENTINEL_PRO v${version} | https://wearedevs.net/obfuscator ]]\n` +
-        `return(function(...) local _S={"${toByteString("SENTINEL_BYPASS")}";${tableData}} ` +
-        `local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) ` +
-        `return (function(...) \n${mangled}\n end)(...) end)(...)`;
+        // 5. Build Final Single-Line Output
+        const final = `${header}\nreturn(function(...) local _S={"${toByteString("KiciaHUB_PRO")}";${tableData}} local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) return (function(...) ${mangled} end)(...) end)(...)`;
 
         document.getElementById('output').value = final;
         document.getElementById('status-msg').innerHTML = `<span class="dot"></span> ENCRYPTION_SUCCESS`;
