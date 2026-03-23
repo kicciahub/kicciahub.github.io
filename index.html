@@ -2,19 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Luau Obfuscator v1</title>
-    <style>
-        body { background: #1a1a1a; color: #0f0; font-family: monospace; padding: 20px; }
-        textarea { width: 100%; height: 250px; background: #000; color: #0f0; border: 1px solid #333; margin-bottom: 10px; }
-        button { padding: 10px 20px; background: #0f0; color: #000; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background: #0a0; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luau Sentinel | Obfuscator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>LUA/LUAU OBFUSCATOR</h1>
-    <textarea id="input" placeholder="-- Paste your Luau code here"></textarea>
-    <button onclick="runObfuscation()">OBFUSCATE CODE</button>
-    <textarea id="output" readonly placeholder="-- Obfuscated code will appear here"></textarea>
+    <div class="background-glow"></div>
+    
+    <div class="main-container">
+        <header>
+            <h1>LUAU<span>SENTINEL</span></h1>
+            <p>Advanced Control-Flow & String Encryption</p>
+        </header>
+
+        <div class="editor-section">
+            <div class="input-wrapper">
+                <label>SOURCE_CODE</label>
+                <textarea id="input" spellcheck="false" placeholder="-- Paste Luau script here..."></textarea>
+            </div>
+            
+            <div class="controls">
+                <button id="obfuscate-btn" onclick="runObfuscation()">
+                    <span class="btn-text">RUN OBFUSCATION</span>
+                    <span class="btn-glitch"></span>
+                </button>
+            </div>
+
+            <div class="output-wrapper">
+                <label>ENCRYPTED_OUTPUT</label>
+                <textarea id="output" readonly spellcheck="false" placeholder="-- Encrypted results..."></textarea>
+            </div>
+        </div>
+
+        <footer>
+            <div class="status-bar">
+                <span class="dot"></span> SYSTEM_READY
+            </div>
+        </footer>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/luaparse@0.3.1/luaparse.min.js"></script>
     <script src="obfuscator.js"></script>
