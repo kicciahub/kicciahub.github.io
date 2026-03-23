@@ -1,0 +1,130 @@
+:root {
+    --primary: #00f2ff; /* Cyan glow */
+    --accent: #7000ff;  /* Purple depth */
+    --bg: #050505;
+    --glass: rgba(20, 20, 25, 0.7);
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Background animated glow */
+.background-glow {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    filter: blur(80px);
+    opacity: 0.2;
+    z-index: -1;
+    animation: pulse 8s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: translate(-50%, -50%) scale(1); }
+    to { transform: translate(-40%, -40%) scale(1.2); }
+}
+
+.main-container {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    color: #fff;
+}
+
+header h1 span {
+    color: var(--primary);
+    text-shadow: 0 0 10px var(--primary);
+}
+
+header p {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-top: 5px;
+}
+
+/* Textareas */
+textarea {
+    width: 100%;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: #d1d1d1;
+    font-family: 'Fira Code', monospace;
+    padding: 15px;
+    margin-top: 10px;
+    resize: none;
+    box-sizing: border-box;
+    transition: border 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border: 1px solid var(--primary);
+}
+
+label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* The Button */
+button {
+    margin: 20px 0;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(45deg, var(--accent), var(--primary));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+}
+
+.status-bar {
+    margin-top: 20px;
+    font-size: 0.7rem;
+    opacity: 0.6;
+}
+
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #0f0;
+    border-radius: 50%;
+    margin-right: 5px;
+    box-shadow: 0 0 5px #0f0;
+}
