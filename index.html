@@ -3,42 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luau Sentinel | Obfuscator</title>
+    <title>SENTINEL | Luau Virtualizer</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background-glow"></div>
-    
     <div class="main-container">
         <header>
-            <h1>LUAU<span>SENTINEL</span></h1>
-            <p>Advanced Control-Flow & String Encryption</p>
+            <h1>SENTINEL<span>PRO</span></h1>
+            <p>Byte-Level Virtualization & Constant Pooling</p>
         </header>
 
         <div class="editor-section">
-            <div class="input-wrapper">
-                <label>SOURCE_CODE</label>
-                <textarea id="input" spellcheck="false" placeholder="-- Paste Luau script here..."></textarea>
+            <div class="field-box">
+                <label>SOURCE_INPUT</label>
+                <textarea id="input" spellcheck="false" placeholder="-- Paste Luau code here..."></textarea>
             </div>
             
-            <div class="controls">
-                <button id="obfuscate-btn" onclick="runObfuscation()">
-                    <span class="btn-text">RUN OBFUSCATION</span>
-                    <span class="btn-glitch"></span>
-                </button>
+            <div class="action-bar">
+                <button id="obfuscate-btn" onclick="runObfuscation()">EXECUTE_ENCRYPTION</button>
+                <button id="copy-btn" onclick="copyCode()">COPY_TO_BUFFER</button>
             </div>
 
-            <div class="output-wrapper">
-                <label>ENCRYPTED_OUTPUT</label>
-                <textarea id="output" readonly spellcheck="false" placeholder="-- Encrypted results..."></textarea>
+            <div class="field-box">
+                <label>VIRTUALIZED_OUTPUT</label>
+                <textarea id="output" readonly spellcheck="false" placeholder="-- Encrypted results will appear here..."></textarea>
             </div>
         </div>
 
         <footer>
-            <div class="status-bar">
-                <span class="dot"></span> SYSTEM_READY
-            </div>
+            <div id="status-msg"><span class="dot"></span> CORE_READY</div>
+            <div id="copy-toast">ENCRYPTED_DATA_COPIED</div>
         </footer>
     </div>
 
