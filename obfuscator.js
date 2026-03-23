@@ -1,45 +1,52 @@
+// Helper: Turns 1 into (math)
+function scramble(n) {
+    const seed = Math.floor(Math.random() * 5000) + 1000;
+    return `(${seed + n}-${seed})`;
+}
+
+// Helper: Turns "Hi" into \072\105
+function toByteString(str) {
+    return str.split('').map(c => `\\${c.charCodeAt(0).toString().padStart(3, '0')}`).join('');
+}
+
+function copyCode() {
+    const out = document.getElementById('output');
+    out.select();
+    document.execCommand('copy');
+    const toast = document.getElementById('copy-toast');
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2500);
+}
+
 function runObfuscation() {
     const input = document.getElementById('input').value;
-    
+    if (!input) return;
+
     try {
-        // We still parse the AST to ensure the code is valid Luau
+        // Validate Luau Syntax
         luaparse.parse(input);
-        
-        let obfuscated = input;
 
-        // 1. The XOR Encryption Logic
-        obfuscated = obfuscated.replace(/"(.*?)"|'(.*?)'/g, (match, p1, p2) => {
-            let str = p1 !== undefined ? p1 : p2;
-            if (!str) return '""'; // Handle empty strings
-
-            // Generate a random encryption key between 1 and 255 for THIS specific string
-            let key = Math.floor(Math.random() * 255) + 1; 
-            
-            // Convert the string into an array of XOR'd byte numbers
-            let encryptedBytes = Array.from(str).map(char => {
-                return char.charCodeAt(0) ^ key; // The ^ symbol is XOR in JavaScript
-            });
-
-            // Replace the string with a call to our decryptor function
-            return `_decrypt({${encryptedBytes.join(",")}}, ${key})`;
+        let pool = [];
+        // Extract strings and replace with table lookups
+        let mangled = input.replace(/"(.*?)"|'(.*?)'/g, (m, p1, p2) => {
+            let content = p1 || p2 || "";
+            pool.push(toByteString(content));
+            return `_S[${scramble(pool.length)}]`;
         });
 
-        // 2. The Luau Decryptor Function (Injected at the top)
-        // Luau uses the 'bit32' library for bitwise operations
-        const decryptorCode = `
-local function _decrypt(bytes, key)
-    local result = ""
-    for _, byteVal in ipairs(bytes) do
-        result = result .. string.char(bit32.bxor(byteVal, key))
-    end
-    return result
-end
-`;
-
-        // 3. Output the final package
-        document.getElementById('output').value = decryptorCode + "\n" + obfuscated;
+        const tableData = pool.map(s => `"${s}"`).join(";");
+        const version = "1.0.5";
         
+        // The Final Boilerplate Template
+        const final = `--[[ SENTINEL_PRO v${version} | https://wearedevs.net/obfuscator ]]\n` +
+        `return(function(...) local _S={"${toByteString("SENTINEL_BYPASS")}";${tableData}} ` +
+        `local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) ` +
+        `return (function(...) \n${mangled}\n end)(...) end)(...)`;
+
+        document.getElementById('output').value = final;
+        document.getElementById('status-msg').innerHTML = `<span class="dot"></span> ENCRYPTION_SUCCESS`;
     } catch (e) {
-        alert("Syntax Error in Luau Code: " + e.message);
+        document.getElementById('status-msg').innerHTML = `<span style="color:red">!</span> SYNTAX_ERROR`;
+        alert("Compile Error: " + e.message);
     }
 }
