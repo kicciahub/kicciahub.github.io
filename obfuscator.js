@@ -23,32 +23,37 @@ function runObfuscation() {
     if (!input) return;
 
     try {
-        // 1. Validate Luau Syntax using luaparse
+        // 1. Validate Luau Syntax
         luaparse.parse(input);
 
-        // 2. Generate Random KiciaHUB Header (20-34 times)
+        // 2. Generate Random KICCIAHUB Header (20-34 times)
         const repeatCount = Math.floor(Math.random() * (34 - 20 + 1)) + 20;
-        const header = "--[KiciaHUB] ".repeat(repeatCount);
+        const header = "--[KICCIAHUB] ".repeat(repeatCount);
 
-        let pool = [];
-        // 3. Extract strings and replace with table lookups (_S[index])
+        // 3. String Pooling & Watermarking
+        // We put your watermark at index 1 of the table
+        let pool = [toByteString("KICCIAHUB MADE THIS")]; 
+        
         let mangled = input.replace(/"(.*?)"|'(.*?)'/g, (m, p1, p2) => {
             let content = p1 || p2 || "";
             pool.push(toByteString(content));
             return `_S[${scramble(pool.length)}]`;
         });
 
-        // 4. Minification: Strip comments and collapse into one line
+        // 4. Minification (Remove comments and force one-line)
         mangled = mangled
-            .replace(/--\[\[[\s\S]*?\]\]/g, "") // Remove multi-line comments
-            .replace(/--.*$/gm, "")             // Remove single-line comments
-            .replace(/\s+/g, " ")               // Turn all newlines/tabs into single spaces
+            .replace(/--\[\[[\s\S]*?\]\]/g, "") 
+            .replace(/--.*$/gm, "")             
+            .replace(/\s+/g, " ")               
             .trim();
 
         const tableData = pool.map(s => `"${s}"`).join(";");
+        const website = "https://kicciahub.github.io/";
         
         // 5. Build Final Single-Line Output
-        const final = `${header}\nreturn(function(...) local _S={"${toByteString("KiciaHUB_PRO")}";${tableData}} local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) return (function(...) ${mangled} end)(...) end)(...)`;
+        // The watermark is sitting at _S[1] but isn't necessarily called, 
+        // making it a "ghost" watermark that stays in the memory.
+        const final = `--[[ KICCIAHUB_PRO | ${website} ]]\n${header}\nreturn(function(...) local _S={${tableData}} local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) return (function(...) ${mangled} end)(...) end)(...)`;
 
         document.getElementById('output').value = final;
         document.getElementById('status-msg').innerHTML = `<span class="dot"></span> ENCRYPTION_SUCCESS`;
