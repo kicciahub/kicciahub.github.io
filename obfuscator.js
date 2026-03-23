@@ -30,16 +30,17 @@ function runObfuscation() {
         const repeatCount = Math.floor(Math.random() * (34 - 20 + 1)) + 20;
         const kicciaHeader = "--[KICCIAHUB] ".repeat(repeatCount);
 
-        // 3. String Pooling with "KICCIAHUB MADE THIS" Watermark
+        // 3. String Pooling with KICCIAHUB Watermark at index 1
         let pool = [toByteString("KICCIAHUB MADE THIS")]; 
         
         let mangled = input.replace(/"(.*?)"|'(.*?)'/g, (m, p1, p2) => {
             let content = p1 || p2 || "";
             pool.push(toByteString(content));
+            // n+1 because the watermark is at index 1
             return `_S[${scramble(pool.length)}]`;
         });
 
-        // 4. Minification (Strip comments and collapse to one line)
+        // 4. Minification (Stripping all extra lines and comments)
         mangled = mangled
             .replace(/--\[\[[\s\S]*?\]\]/g, "") 
             .replace(/--.*$/gm, "")             
@@ -49,7 +50,7 @@ function runObfuscation() {
         const tableData = pool.map(s => `"${s}"`).join(";");
         const website = "https://kicciahub.github.io/";
         
-        // 5. Final Assembly (Single-Line Template)
+        // 5. THE FIX: New Template (No Sentinel references)
         const final = `--[[ KICCIAHUB_PRO | ${website} ]]\n${kicciaHeader}\nreturn(function(...) local _S={${tableData}} local function _D(e) return _S[e] end local _ENV=(getfenv and getfenv() or _ENV) return (function(...) ${mangled} end)(...) end)(...)`;
 
         document.getElementById('output').value = final;
