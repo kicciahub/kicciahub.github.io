@@ -38,7 +38,7 @@ textarea {
     border: 1px solid var(--border); border-radius: 8px;
     color: #eee; font-family: 'Fira Code', monospace; font-size: 11px;
     padding: 12px; margin-top: 8px; resize: none; box-sizing: border-box;
-    white-space: pre-wrap; word-wrap: break-word; /* Ensures the long line wraps visually */
+    white-space: pre-wrap; word-wrap: break-word;
 }
 
 .action-bar { display: flex; gap: 10px; margin: 15px 0; }
